@@ -1,0 +1,188 @@
+<link rel="import" href="../polymer/polymer.html">
+<!--
+
+An element that implements Element Queries, scoped to individual elements. Element Queries would allow you to attach Media Query break-points based on the dimensions and characteristics of an element itself, instead of the page’s viewport.
+
+Inspired by [akyral-element-query](https://github.com/filaraujo/akyral-element-query) and [element-queries](https://github.com/csuwildcat/element-queries) and 
+
+## Using the element
+`element-query` requires a `query` attribute to be defined. You can define
+single query or a JSON array of multiple queries (note the use of a single quote
+in the queries attribute)
+
+####Example:
+    <element-query
+        query="(min-width:320px) and (max-width:480px)">
+    </element-query>
+
+####Example:
+    <element-query
+        queries="['(min-width:320px) and (max-width:480px)',
+                '(min-width:481px) and (max-width:720px)',
+                '(min-width:721px) and (max-width:944px)',
+                '(min-width:945px) and (max-width:1264px)']">
+    </element-query>
+
+
+@element element-query
+@blurb Element that implements element queries to its parent node.
+@status alpha
+@homepage https://github.com/addyosmani/element-query
+@demo demo
+-->
+
+<!--
+Fired when an element query changes, also fired on element load. Passes the
+`media` value within the event details. The element-query also has
+`media` property defining the current selected query.
+
+@event element-query-change
+-->
+
+<polymer-element name="element-query">
+
+    <template>
+        <style>
+        :host {
+            bottom: 0;
+            display: block;
+            left: 0;
+            overflow: hidden;
+            position: absolute;
+            right: 0;
+            top: 0;
+            z-index: -1;
+        }
+        object {
+            width: 100%;
+            height: 100%;
+        }
+        </style>
+        <template if="[[queries]]">
+            <object id="obj" type="text/html" on-load="{{loaded}}"></object>
+        </template>
+    </template>
+    <script>
+    (function() {
+
+        var baseStyles = [,
+                'html, body  { margin: 0; padding: 0 }',
+                'div { transition: opacity 0.01s; opacity: 0;}'
+            ];
+
+        /**
+         * The `buildDOM` method contructs the media query nodes and styles to
+         * test against.
+         *
+         * @method buildDOM
+         * @returns object
+         * @private
+         */
+        function buildDOM() {
+            var nodes = [],
+                styles = [].concat(baseStyles);
+
+            // convert to array
+            this.queries = [].concat.apply([], [this.queries]);
+
+            this.queries.forEach(function(v, index) {
+                nodes.push('<div query="' + v + '"></div>');
+                styles.push('@media ' + v + ' { [query="' + v + '"] { opacity: 1; }}');
+            });
+
+            return {
+                styles: styles,
+                nodes: nodes
+            };
+        }
+
+        // define polymer component
+        Polymer('element-query', {
+
+            publish: {
+
+                /**
+                 * `media` attribute is set by the element when a query changes.
+                 * This attribute is reflected.
+                 *
+                 * @attribute media
+                 * @type string
+                 * @default undefined
+                 */
+                media: {
+                    reflect: true,
+                    value: undefined
+                },
+
+                /**
+                 * `queries` attribute defines the media queries to test against.
+                 *
+                 * @attribute queries
+                 * @type array or string
+                 * @default []
+                 */
+                queries: []
+            },
+
+
+            /**
+             * The `loaded` method handles object dom creation. This method will
+             * inject the styles and node into the document as well as bind the
+             * handlers.
+             *
+             * @method loaded
+             */
+            loaded: function (e) {
+                var doc = this.$.obj.contentDocument,
+                    dom = buildDOM.bind(this)(),
+                    style = doc.createElement('style');
+
+                style.innerHTML = dom.styles.join('');
+
+                doc.head.appendChild(style);
+                doc.body.innerHTML = dom.nodes.join('');
+
+                doc.addEventListener('transitionend', this.update.bind(this));
+                this.async(this.update);
+            },
+
+            /**
+             * The `update` method will set the media attribute and fire the
+             * `element-query-change` event.
+             *
+             * @method update
+             */
+            update: function (e) {
+                var objWindow = this.$.obj.contentDocument.defaultView.window,
+                    viewport = this.queries.filter(function(view) {
+                        return objWindow.matchMedia(view).matches;
+                    });
+
+                viewport = viewport[0] || '';
+
+                this.job('event', function () {
+                    this.fire('element-query-change', {
+                        media: viewport
+                    });
+                }, 250);
+
+                this.job('attribute', function () {
+                    this.media = viewport;
+                }, 150);
+            },
+
+            ready: function () {
+                /*
+                 * IE doesn't handle object tag with data attribute well
+                 * needs to be defined after the fact
+                 */
+                this.async(function () {
+                    this.$.obj.data = 'about:blank';
+                }, 100);
+
+            }
+        });
+
+    }());
+    </script>
+</polymer-element>
