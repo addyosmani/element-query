@@ -14,11 +14,11 @@
     "polymer-test-tools": "Polymer/polymer-test-tools#^0.4.0"
   },
   "homepage": "https://github.com/addyosmani/element-query",
-  "_release": "a19a575a14",
+  "_release": "964f0f5f62",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a19a575a14e38dd72d010756e0a4e8b599a38b1d"
+    "commit": "964f0f5f62ae43d00052b4eedeeb0c370df543d2"
   },
   "_source": "git://github.com/addyosmani/element-query.git",
   "_target": "master",

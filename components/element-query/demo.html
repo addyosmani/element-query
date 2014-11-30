@@ -7,30 +7,29 @@
   <script src="../webcomponentsjs/webcomponents.min.js"></script>
   <link rel="import" href="element-query.html">
   <link rel="import" href="element-query-demo.html">
-  <!-- <link rel="stylesheet" href="element-query-demo.css"> -->
 
 </head>
 <body unresolved>
 
-  <p>An `element-query` (used inside a demo `element-query-demo`) looks like this:</p>
+ 	<p>An `element-query` (used inside a demo `element-query-demo`) looks like this:</p>
 
- <element-query-demo></element-query-demo>
+	<h2>Demo 1</h2>
+	 <element-query-demo></element-query-demo>
 
- <element-query-demo width="70"></element-query-demo>
+	<h2>Demo 2</h2>
+	 <element-query-demo width="50"></element-query-demo>
 
- <element-query-demo width="50"></element-query-demo>
+	<h2>Horizontal layout</h2>
+	 <div horizontal layout>
+	 	<element-query-demo flex></element-query-demo>
+	 	<element-query-demo></element-query-demo>
+	 </div>
 
-<h2>Horizontal layout</h2>
- <div horizontal layout>
- 	<element-query-demo flex></element-query-demo>
- 	<element-query-demo></element-query-demo>
- </div>
-
-<h2>Vertical layout</h2>
- <div vertical layout style="height:500px;">
-    <element-query-demo></element-query-demo>
- 	<element-query-demo flex></element-query-demo>
- </div>
+	<h2>Vertical layout</h2>
+	 <div vertical layout style="height:500px; max-width:600px;">
+	    <element-query-demo></element-query-demo>
+	 	<element-query-demo flex></element-query-demo>
+	 </div>
 
 
 <script>

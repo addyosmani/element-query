@@ -67,7 +67,6 @@
             background: #C5CAE9;
             box-sizing: border-box;
             height: 300px;
-            padding: 10px;
             position: relative;
             margin: 0 auto;
             overflow: hidden;
@@ -84,30 +83,28 @@
         }
         :host::shadow .demo-query[media="(max-width:375px)"] .demo-query__inner {
             border-color: transparent;
+            background: #E91E63;
         }
         :host::shadow .demo-query[media="(min-width:376px) and (max-width:500px)"] .demo-query__inner {
             border-color: transparent;
+            background: #E91E63;
         }
         :host::shadow .demo-query[media="(min-width:376px) and (max-width:500px)"] .demo-query__review {
-            background: #E91E63;
             color: white;
         }
         :host::shadow .demo-query[media="(min-width:501px) and (max-width:750px)"] .demo-query__inner {
             background: #9575CD;
         }
         :host::shadow .demo-query[media="(min-width:501px) and (max-width:750px)"] .demo-query__review {
-            background: #E91E63;
             color: white;
         }
         :host::shadow .demo-query[media="(min-width:751px)"] .demo-query__inner {
             background: #4527A0;
         }
         :host::shadow .demo-query[media="(min-width:751px)"] .demo-query__review {
-            background: #E91E63;
             color: white;
         }
         :host::shadow .demo-query__review {
-            background: #C5CAE9;
             border: 2px solid transparent;
             border-width: 2px 0;
             bottom: 20%;
@@ -123,7 +120,7 @@
             transition: background .3s, color .3s;
         }
         :host::shadow .demo-query__review code {
-            color: #4527A0;
+            color: #C5CAE9;
             font-size: 1.2em;
             font-weight: 700;
         }
@@ -143,12 +140,7 @@
     </template>
     <script>
     Polymer({
-        width: 100,
-        widthChanged: function() {
-            this.job('track', function() {
-                console.log('send', 'event', 'element-query', 'drag range', this.width);
-            }, 100);
-        }
+        width: 100
     });
     </script>
 </polymer-element>
