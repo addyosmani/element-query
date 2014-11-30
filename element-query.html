@@ -7,7 +7,7 @@ Inspired by [akyral-element-query](https://github.com/filaraujo/akyral-element-q
 
 ## Using the element
 `element-query` requires a `query` attribute to be defined. You can define
-single query or a JSON array of multiple queries (note the use of a single quote
+a single query or a JSON array of multiple queries (note the use of a single quote
 in the queries attribute)
 
 ####Example:
@@ -40,149 +40,142 @@ Fired when an element query changes, also fired on element load. Passes the
 -->
 
 <polymer-element name="element-query">
-
-    <template>
-        <style>
-        :host {
-            bottom: 0;
-            display: block;
-            left: 0;
-            overflow: hidden;
-            position: absolute;
-            right: 0;
-            top: 0;
-            z-index: -1;
-        }
-        object {
-            width: 100%;
-            height: 100%;
-        }
-        </style>
-        <template if="[[queries]]">
-            <object id="obj" type="text/html" on-load="{{loaded}}"></object>
-        </template>
+  <template>
+    <link rel="stylesheet" href="element-query.css">
+      <template if="[[queries]]">
+        <object id="object" type="text/html" on-load="{{objLoaded}}"></object>
+      </template>
     </template>
     <script>
-    (function() {
+    (function () {
+      Polymer('element-query', {
+        publish: {
 
-        var baseStyles = [,
-                'html, body  { margin: 0; padding: 0 }',
-                'div { transition: opacity 0.01s; opacity: 0;}'
-            ];
+          /**
+           * `useTransition` is used to specify whether a transition should be used
+           * when switching from one query to the ntext
+           *
+           * @attribute useTransition
+           * @type boolean
+           * @default true
+           */
+          useTransition: true,
+
+          /**
+           * `media` is set by the element when a query changes.
+           * This attribute is reflected.
+           *
+           * @attribute media
+           * @type string
+           * @default undefined
+           */
+          media: {
+              reflect: true,
+              value: undefined
+          },
+
+          /**
+           * `queries` attribute defines the media queries to test against.
+           *
+           * @attribute queries
+           * @type array or string
+           * @default []
+           */
+          queries: []
+        },
+
+        baseStyles: [,],
+
+        populateQueries: function (nodes, styles) {
+          this.queries.forEach(function(i, index) {
+            nodes.push('<div query="' + i + '"></div>');
+            styles.push('@media ' + i + ' { [query="' + i + '"] { opacity: 1; }}');
+          });
+        },
 
         /**
-         * The `buildDOM` method contructs the media query nodes and styles to
+         * The `constructDOM` method contructs the media query nodes and styles to
          * test against.
          *
-         * @method buildDOM
+         * @method constructDOM
          * @returns object
          * @private
          */
-        function buildDOM() {
-            var nodes = [],
-                styles = [].concat(baseStyles);
+        constructDOM: function () {
+          var nodes    = [];
+          var styles   = [].concat(this.baseStyles);
+          this.queries = [].concat.apply([], [this.queries]);
+          this.populateQueries(nodes, styles);
 
-            // convert to array
-            this.queries = [].concat.apply([], [this.queries]);
+          return {
+            styles: styles,
+            nodes: nodes
+          }
+        },
 
-            this.queries.forEach(function(v, index) {
-                nodes.push('<div query="' + v + '"></div>');
-                styles.push('@media ' + v + ' { [query="' + v + '"] { opacity: 1; }}');
+        setObjectData: function () {
+          this.$.object.data = 'about:blank';
+        },
+
+        created: function () {
+          if (this.useTransition) {
+            // TODO: Allow the actual transition to be overridden
+            this.baseStyles.push('div { transition: opacity 0.01s; opacity: 0; }');
+          }
+        },  
+
+        ready: function () {
+          this.async(this.setObjectData, 150);
+        },
+
+        /**
+         * The `objLoaded` method handles object dom creation. This method will
+         * inject the styles and node into the document as well as bind the
+         * handlers.
+         *
+         * @method objLoaded
+         */
+        objLoaded: function () {
+          var obj      = this.$.object;
+          var content  = obj.contentDocument;
+          var dom      = this.constructDOM();
+          var style    = content.createElement('style');
+          
+          style.innerHTML = dom.styles.join('');
+          content.head.appendChild(style);
+
+          content.body.innerHTML = dom.nodes.join('');
+          content.addEventListener('transitionend', this.updateMediaAttribute.bind(this));
+
+          this.async(this.updateMediaAttribute);
+        },
+
+       /**
+         * The `updateMediaAttribute` method will set the media attribute and fire the
+         * `element-query-change` event.
+         *
+         * @method updateMediaAttribute
+         */
+        updateMediaAttribute: function () {
+            var objWindow  = this.$.object.contentDocument.defaultView.window;
+            var viewport   = this.queries.filter(function(view) {
+               return objWindow.matchMedia(view).matches;
             });
 
-            return {
-                styles: styles,
-                nodes: nodes
-            };
+            viewport = viewport[0] || '';
+
+            this.job('event', function () {
+              this.fire('element-query-change', {
+                media: viewport
+              });
+            }, 200);
+
+            this.job('attribute', function () {
+              this.media = viewport;
+            });
         }
 
-        // define polymer component
-        Polymer('element-query', {
-
-            publish: {
-
-                /**
-                 * `media` attribute is set by the element when a query changes.
-                 * This attribute is reflected.
-                 *
-                 * @attribute media
-                 * @type string
-                 * @default undefined
-                 */
-                media: {
-                    reflect: true,
-                    value: undefined
-                },
-
-                /**
-                 * `queries` attribute defines the media queries to test against.
-                 *
-                 * @attribute queries
-                 * @type array or string
-                 * @default []
-                 */
-                queries: []
-            },
-
-
-            /**
-             * The `loaded` method handles object dom creation. This method will
-             * inject the styles and node into the document as well as bind the
-             * handlers.
-             *
-             * @method loaded
-             */
-            loaded: function (e) {
-                var doc = this.$.obj.contentDocument,
-                    dom = buildDOM.bind(this)(),
-                    style = doc.createElement('style');
-
-                style.innerHTML = dom.styles.join('');
-
-                doc.head.appendChild(style);
-                doc.body.innerHTML = dom.nodes.join('');
-
-                doc.addEventListener('transitionend', this.update.bind(this));
-                this.async(this.update);
-            },
-
-            /**
-             * The `update` method will set the media attribute and fire the
-             * `element-query-change` event.
-             *
-             * @method update
-             */
-            update: function (e) {
-                var objWindow = this.$.obj.contentDocument.defaultView.window,
-                    viewport = this.queries.filter(function(view) {
-                        return objWindow.matchMedia(view).matches;
-                    });
-
-                viewport = viewport[0] || '';
-
-                this.job('event', function () {
-                    this.fire('element-query-change', {
-                        media: viewport
-                    });
-                }, 250);
-
-                this.job('attribute', function () {
-                    this.media = viewport;
-                }, 150);
-            },
-
-            ready: function () {
-                /*
-                 * IE doesn't handle object tag with data attribute well
-                 * needs to be defined after the fact
-                 */
-                this.async(function () {
-                    this.$.obj.data = 'about:blank';
-                }, 100);
-
-            }
-        });
-
-    }());
+      });
+     })();
     </script>
 </polymer-element>
