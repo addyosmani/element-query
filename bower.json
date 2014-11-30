@@ -9,7 +9,8 @@
   "main": "element-query.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^0.5.1",
-    "webcomponentsjs": "Polymer/webcomponentsjs#^0.5.1"
+    "webcomponentsjs": "Polymer/webcomponentsjs#^0.5.1",
+    "font-roboto": "*"
   },
   "devDependencies": {
     "polymer-test-tools": "Polymer/polymer-test-tools#^0.4.0"
