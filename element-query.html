@@ -3,8 +3,6 @@
 
 An element that implements Element Queries, scoped to individual elements. Element Queries would allow you to attach Media Query break-points based on the dimensions and characteristics of an element itself, instead of the page’s viewport.
 
-Inspired by [akyral-element-query](https://github.com/filaraujo/akyral-element-query) and [element-queries](https://github.com/csuwildcat/element-queries) 
-
 ## Using the element
 `element-query` requires a `query` attribute to be defined. You can define
 a single query or a JSON array of multiple queries (note the use of a single quote
@@ -23,6 +21,9 @@ in the queries attribute)
                 '(min-width:945px) and (max-width:1264px)']">
     </element-query>
 
+## Inspiration
+
+Daniel Buchner has done some great exploratory work in this area before as has Filipe Araujo. Some implementations that inspired what we have here are [akyral-element-query](https://github.com/filaraujo/akyral-element-query) and [element-queries](https://github.com/csuwildcat/element-queries).
 
 @element element-query
 @blurb Element that implements element queries to its parent node.
