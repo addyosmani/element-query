@@ -1,0 +1,154 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../font-roboto/roboto.html">
+
+<polymer-element name="element-query-demo" attributes="width">
+    <template>
+        <style>
+        :host {
+            display: block;
+            font-family: 'Roboto', "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+        :host::shadow input {
+            -webkit-appearance: none;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.2);
+            border-radius: 50px;
+            height: 5px;
+            background: #C5CAE9;
+            outline: none;
+            transition: background .3s;
+            margin: 20px 0;
+            width: 100%;
+        }
+        :host::shadow input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            background: #4527A0;
+            border: 2px solid transparent;
+            border-radius: 100%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            height: 22px;
+            position: relative;
+            transition: background .3s, box-shadow .3s;
+            width: 22px;
+            z-index: 3;
+        }
+        :host::shadow input::-webkit-slider-thumb:hover,
+        :host::shadow input::-webkit-slider-thumb:active {
+            background: #E91E63;
+            border: 2px solid white;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+        :host::shadow input::-moz-range-track {
+            border-radius: 50px;
+            height: 5px;
+            background: #C5CAE9;
+            margin: 20px 0;
+            width: 100%;
+        }
+        :host::shadow input::-moz-range-thumb {
+            background: #4527A0;
+            border: 2px solid transparent;
+            border-radius: 100%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            height: 26px;
+            position: relative;
+            transition: box-shadow .3s;
+            width: 26px;
+            z-index: 3;
+        }
+        :host::shadow input::-moz-range-thumb:hover,
+        :host::shadow input::-moz-range-thumb:active {
+            background: #E91E63;
+            border: 2px solid white;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+        }
+        :host::shadow .demo-query {
+            background: #C5CAE9;
+            box-sizing: border-box;
+            height: 300px;
+            padding: 10px;
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            transition: background .3s, color .3s;
+            min-width: 200px;
+            width: 100%;
+        }
+        :host::shadow .demo-query__inner {
+            border: 2px solid transparent;
+            box-sizing: border-box;
+            height: 100%;
+            transition: border-color .3s, background .3s;
+            width: 100%;
+        }
+        :host::shadow .demo-query[media="(max-width:375px)"] .demo-query__inner {
+            border-color: transparent;
+        }
+        :host::shadow .demo-query[media="(min-width:376px) and (max-width:500px)"] .demo-query__inner {
+            border-color: transparent;
+        }
+        :host::shadow .demo-query[media="(min-width:376px) and (max-width:500px)"] .demo-query__review {
+            background: #E91E63;
+            color: white;
+        }
+        :host::shadow .demo-query[media="(min-width:501px) and (max-width:750px)"] .demo-query__inner {
+            background: #9575CD;
+        }
+        :host::shadow .demo-query[media="(min-width:501px) and (max-width:750px)"] .demo-query__review {
+            background: #E91E63;
+            color: white;
+        }
+        :host::shadow .demo-query[media="(min-width:751px)"] .demo-query__inner {
+            background: #4527A0;
+        }
+        :host::shadow .demo-query[media="(min-width:751px)"] .demo-query__review {
+            background: #E91E63;
+            color: white;
+        }
+        :host::shadow .demo-query__review {
+            background: #C5CAE9;
+            border: 2px solid transparent;
+            border-width: 2px 0;
+            bottom: 20%;
+            color: #4527A0;
+            content: attr(media);
+            display: block;
+            left: -2px;
+            margin: 0;
+            min-height: 20px;
+            padding: 25px 20px;
+            position: absolute;
+            right: -2px;
+            transition: background .3s, color .3s;
+        }
+        :host::shadow .demo-query__review code {
+            color: #4527A0;
+            font-size: 1.2em;
+            font-weight: 700;
+        }
+        </style>
+
+        <input type="range" value="{{width}}" min="20" max="100" step="1">
+
+        <div class="demo-query" media="{{media}}" style="width: {{width}}%">
+            <element-query id="eq" queries='["(max-width:375px)","(min-width:376px) and (max-width:500px)","(min-width:501px) and (max-width:750px)", "(min-width:751px)"]' media="{{media}}"></element-query>
+            <div class="demo-query__inner">
+                <div class="demo-query__review">
+                    Element query displaying the <code>{{media}}</code> media query .
+                </div>
+            </div>
+        </div>
+
+    </template>
+    <script>
+    Polymer({
+        width: 100,
+        widthChanged: function() {
+            this.job('track', function() {
+                console.log('send', 'event', 'element-query', 'drag range', this.width);
+            }, 100);
+        }
+    });
+    </script>
+</polymer-element>

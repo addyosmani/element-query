@@ -1,0 +1,27 @@
+{
+  "name": "element-query",
+  "keywords": [
+    "element-query",
+    "polymer",
+    "web-components"
+  ],
+  "main": "element-query.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^0.5.1",
+    "webcomponentsjs": "Polymer/webcomponentsjs#^0.5.1"
+  },
+  "devDependencies": {
+    "polymer-test-tools": "Polymer/polymer-test-tools#^0.4.0"
+  },
+  "homepage": "https://github.com/addyosmani/element-query",
+  "_release": "cb87cdba04",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "cb87cdba04dd53f406b4ca8a15db2524d1dbf6fd"
+  },
+  "_source": "git://github.com/addyosmani/element-query.git",
+  "_target": "master",
+  "_originalSource": "addyosmani/element-query",
+  "_direct": true
+}

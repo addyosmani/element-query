@@ -1,0 +1,7 @@
+{
+  "name": "element-query#gh-pages",
+  "private": true,
+  "dependencies": {
+    "element-query": "addyosmani/element-query#master"
+  }
+}
